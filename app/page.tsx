@@ -54,6 +54,22 @@ export default function HomePage() {
 
   return (
     <div style={{minHeight:"100vh",background:"#050507"}}>
+
+      {/* Maintenance Banner */}
+      <div style={{
+        background:"rgba(245,158,11,0.12)",
+        borderBottom:"1px solid rgba(245,158,11,0.25)",
+        padding:"9px 24px",
+        textAlign:"center",
+        fontSize:13,
+        color:"#fbbf24",
+        fontWeight:500,
+        letterSpacing:"0.1px",
+      }}>
+        🛠 This site is currently under maintenance. Some features may be temporarily unavailable.
+      </div>
+
+      {/* Nav */}
       <nav style={{
         position:"sticky",top:0,zIndex:100,height:52,
         borderBottom:"1px solid rgba(255,255,255,0.07)",
