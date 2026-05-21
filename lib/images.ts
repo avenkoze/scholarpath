@@ -1,161 +1,200 @@
-// Scholarship photo mapping
-// University scholarships → campus/building photos
-// Government scholarships → country landmark photos
-// All from Wikimedia Commons (stable, free, no auth)
-// Format: commons.wikimedia.org/wiki/Special:FilePath/{filename}?width=800
+// Scholarship photo mapping - verified direct upload.wikimedia.org URLs
+// Thumbnail format: /thumb/{hash1}/{hash2}/{filename}/{width}px-{filename}
 
-const WC = (filename: string) =>
-  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=800`;
+const WP = (path: string, filename: string, w = 800) =>
+  `https://upload.wikimedia.org/wikipedia/commons/thumb/${path}/${w}px-${filename}`;
+
+// Picsum fallback for unverified ones - consistent beautiful photos
+const PX = (seed: string) =>
+  `https://picsum.photos/seed/${seed}/800/450`;
 
 export const SCHOLARSHIP_PHOTOS: Record<string, string> = {
-  // ── US ──────────────────────────────────────────────────────
+
+  // ── United States ────────────────────────────────────────────
   "fulbright-foreign-student":
-    WC("Stanford_-_Main_Quad_-_Serra_Mall_2.jpg"),
+    WP("b/bf/Golden_Gate_Bridge_as_seen_from_Battery_East.jpg",
+       "Golden_Gate_Bridge_as_seen_from_Battery_East.jpg"),
   "harvard-financial-aid":
-    WC("Harvard_University_aerial.jpg"),
+    PX("harvard-campus"),
   "stanford-knight-hennessy":
-    WC("Stanford_Memorial_Church_front.jpg"),
+    PX("stanford-campus"),
   "opendoors-us-scholarships":
-    WC("Golden_Gate_Bridge,_San_Francisco_-_Dec_2015.jpg"),
+    WP("b/bf/Golden_Gate_Bridge_as_seen_from_Battery_East.jpg",
+       "Golden_Gate_Bridge_as_seen_from_Battery_East.jpg"),
 
-  // ── Germany ─────────────────────────────────────────────────
+  // ── Germany ──────────────────────────────────────────────────
   "daad-helmut-schmidt":
-    WC("Brandenburger_Tor_abends.jpg"),
+    WP("4/48/Berlin_Brandenburg_Gate.JPG",
+       "Berlin_Brandenburg_Gate.JPG"),
   "daad-development-scholarship":
-    WC("Neuschwanstein_Castle_from_Marienbrücke_2021.jpg"),
+    WP("4/48/Berlin_Brandenburg_Gate.JPG",
+       "Berlin_Brandenburg_Gate.JPG"),
   "humboldt-foundation":
-    WC("Humboldt-Universität_zu_Berlin_2015.jpg"),
+    PX("humboldt-berlin"),
   "max-planck-imprs":
-    WC("Max-Planck-Institut_für_Biochemie,_Martinsried.jpg"),
+    PX("max-planck-munich"),
 
-  // ── UK ──────────────────────────────────────────────────────
+  // ── United Kingdom ───────────────────────────────────────────
   "chevening":
-    WC("Clock_Tower_-_Palace_of_Westminster,_London_-_May_2007.jpg"),
+    PX("london-parliament"),
   "gates-cambridge":
-    WC("King's_College_Chapel,_Cambridge_-_Oct_2006.jpg"),
+    WP("b/be/Kings_College_Chapel%2C_Cambridge%2C_July_2010_%2803%29.JPG",
+       "Kings_College_Chapel%2C_Cambridge%2C_July_2010_%2803%29.JPG"),
   "oxford-clarendon":
-    WC("Radcliffe_Camera,_Oxford_-_Oct_2006.jpg"),
+    WP("2/2b/Radcliffe_Camera%2C_Oxford_-_Oct_2006.jpg",
+       "Radcliffe_Camera%2C_Oxford_-_Oct_2006.jpg"),
   "rhodes-scholarship":
-    WC("Bodleian_Library_-_Radcliffe_Camera,_Oxford.jpg"),
+    WP("2/2b/Radcliffe_Camera%2C_Oxford_-_Oct_2006.jpg",
+       "Radcliffe_Camera%2C_Oxford_-_Oct_2006.jpg"),
   "commonwealth-scholarship":
-    WC("Tower_Bridge_London_Feb_2006.jpg"),
+    PX("london-tower-bridge"),
 
-  // ── EU / Europe ─────────────────────────────────────────────
+  // ── Europe / EU ──────────────────────────────────────────────
   "erasmus-mundus":
-    WC("European_Parliament_Strasbourg_Hemicycle_-_Diliff.jpg"),
+    PX("european-parliament"),
   "eiffel-excellence-france":
-    WC("Tour_Eiffel_Wikimedia_Commons.jpg"),
+    WP("a/a8/Tour_Eiffel_Wikimedia_Commons.jpg",
+       "Tour_Eiffel_Wikimedia_Commons.jpg"),
   "visegrad-scholarship":
-    WC("Prague_-_Pražský_hrad_-_panoramio.jpg"),
+    PX("prague-castle"),
   "banach-programme-poland":
-    WC("Krakow_-_Rynek_Glowny.jpg"),
+    PX("krakow-poland"),
   "norway-quota-scheme":
-    WC("Geirangerfjord.jpg"),
+    PX("norway-fjord"),
   "finland-aim-scholarship":
-    WC("Helsinki_Cathedral.jpg"),
+    PX("helsinki-finland"),
 
-  // ── Switzerland ─────────────────────────────────────────────
+  // ── Switzerland ──────────────────────────────────────────────
   "swiss-government-excellence":
-    WC("Matterhorn_from_Domhütte_-_2.jpg"),
+    PX("matterhorn-swiss"),
   "eth-zurich-excellence":
-    WC("Hauptgebaeude_der_ETH_Zuerich_im_Abendlicht.jpg"),
+    WP("8/84/Eidgen%C3%B6ssische_Technische_Hochschule_%28ETH%29%2C_main_building_Z%C3%BCrich%2C_2006.jpg",
+       "Eidgen%C3%B6ssische_Technische_Hochschule_%28ETH%29%2C_main_building_Z%C3%BCrich%2C_2006.jpg"),
   "epfl-excellence-fellowship":
-    WC("EPFL_campus_aerial_2007.jpg"),
+    PX("epfl-lausanne"),
 
-  // ── Netherlands ─────────────────────────────────────────────
+  // ── Netherlands ──────────────────────────────────────────────
   "tu-delft-excellence":
-    WC("Delft_-_TU_Delft_Aula_congrescentrum.jpg"),
+    PX("delft-netherlands"),
   "leiden-excellence":
-    WC("Leiden_Academiegebouw.jpg"),
+    PX("leiden-university"),
   "wur-scholarship":
-    WC("Wageningen_UR_Forumgebouw.jpg"),
+    PX("wageningen-campus"),
   "nuffic-orange":
-    WC("Amsterdam_-_Herengracht.jpg"),
+    PX("amsterdam-canals"),
+  "holland-scholarship":
+    PX("amsterdam-canals-2"),
 
-  // ── Belgium ─────────────────────────────────────────────────
+  // ── Belgium ──────────────────────────────────────────────────
   "ku-leuven-scholarship":
-    WC("Leuven_-_Grote_markt.jpg"),
+    PX("leuven-belgium"),
 
-  // ── Italy ───────────────────────────────────────────────────
+  // ── Italy ────────────────────────────────────────────────────
   "bologna-unibo-scholarship":
-    WC("Bologna_Archiginnasio.jpg"),
+    PX("bologna-italy"),
 
-  // ── Sweden ──────────────────────────────────────────────────
+  // ── Sweden ───────────────────────────────────────────────────
   "swedish-institute":
-    WC("Stockholm_-_Stadshuset.jpg"),
+    PX("stockholm-sweden"),
 
-  // ── Hungary ─────────────────────────────────────────────────
+  // ── Hungary ──────────────────────────────────────────────────
   "stipendium-hungaricum":
-    WC("Orszaghaz.jpg"),
+    WP("7/7b/Orszaghaz.jpg", "Orszaghaz.jpg"),
 
-  // ── Turkey ──────────────────────────────────────────────────
+  // ── Turkey ───────────────────────────────────────────────────
   "turkiye-burslari":
-    WC("Hagia_Sophia_Mars_2013.jpg"),
+    WP("2/22/Hagia_Sophia_Mars_2013.jpg",
+       "Hagia_Sophia_Mars_2013.jpg"),
 
-  // ── Japan ───────────────────────────────────────────────────
+  // ── Japan ────────────────────────────────────────────────────
   "japanese-mext":
-    WC("Mount_Fuji_from_Hotel_Mt_Fuji_04bs3200.jpg"),
+    WP("d/d2/Mount_Fuji_from_Lake_Kawaguchi_s2.jpg",
+       "Mount_Fuji_from_Lake_Kawaguchi_s2.jpg"),
 
-  // ── South Korea ─────────────────────────────────────────────
+  // ── South Korea ──────────────────────────────────────────────
   "korean-gks":
-    WC("Gyeongbokgung-geunjeongjeon.jpg"),
+    PX("gyeongbokgung-seoul"),
   "global-korea-topik":
-    WC("N_Seoul_Tower_01.jpg"),
+    PX("kaist-south-korea"),
 
-  // ── China ───────────────────────────────────────────────────
+  // ── China ────────────────────────────────────────────────────
   "chinese-government-csc":
-    WC("Great_Wall_of_China_July_2006.jpg"),
+    WP("f/fa/Great_Wall_of_China_July_2006.JPG",
+       "Great_Wall_of_China_July_2006.JPG"),
 
-  // ── Taiwan ──────────────────────────────────────────────────
+  // ── Taiwan ───────────────────────────────────────────────────
   "taiwan-icdf":
-    WC("Taipei_101_from_afar.jpg"),
+    PX("taipei-taiwan"),
 
-  // ── Australia ───────────────────────────────────────────────
+  // ── Australia ────────────────────────────────────────────────
   "australia-awards":
-    WC("Sydney_Opera_House,_botanic_gardens_1.jpg"),
+    WP("7/75/Sydney_Opera_House%2C_botanic_gardens_1.jpg",
+       "Sydney_Opera_House%2C_botanic_gardens_1.jpg"),
+  "australia-endeavour":
+    WP("7/75/Sydney_Opera_House%2C_botanic_gardens_1.jpg",
+       "Sydney_Opera_House%2C_botanic_gardens_1.jpg"),
 
-  // ── Canada ──────────────────────────────────────────────────
+  // ── Canada ───────────────────────────────────────────────────
   "vanier-canada":
-    WC("Toronto_-_ON_-_Nathan_Phillips_Square.jpg"),
+    PX("toronto-canada"),
 
-  // ── New Zealand ─────────────────────────────────────────────
+  // ── New Zealand ──────────────────────────────────────────────
   "new-zealand-manaaki":
-    WC("Milford_Sound_Mitre_Peak_1.jpg"),
+    PX("milford-sound-nz"),
+  "manaaki-new-zealand":
+    PX("new-zealand-landscape"),
 
-  // ── Singapore ───────────────────────────────────────────────
+  // ── Singapore ────────────────────────────────────────────────
   "nus-research-scholarship":
-    WC("Marina_Bay_Sands_in_Singapore_-_20101120.jpg"),
+    PX("marina-bay-singapore"),
 
-  // ── Saudi Arabia ────────────────────────────────────────────
+  // ── Saudi Arabia ─────────────────────────────────────────────
   "kaust-fellowship":
-    WC("King_Abdullah_University_of_Science_and_Technology.jpg"),
+    PX("kaust-red-sea"),
 
-  // ── Russia ──────────────────────────────────────────────────
+  // ── Russia ───────────────────────────────────────────────────
   "russian-government-scholarship":
-    WC("Moskova_red_square.jpg"),
+    PX("moscow-russia"),
+
+  // ── Poland ───────────────────────────────────────────────────
+  "banach-programme-poland":
+    PX("krakow-old-town"),
+
+  // ── Norway ───────────────────────────────────────────────────
+  "norway-quota-scheme":
+    PX("geiranger-fjord"),
+
+  // ── Finland ──────────────────────────────────────────────────
+  "finland-aim-scholarship":
+    PX("helsinki-finland"),
+
+  // ── Ireland ──────────────────────────────────────────────────
+  "ireland-government":
+    PX("dublin-ireland"),
 
   // ── Multi / International ────────────────────────────────────
   "mastercard-foundation":
-    WC("Makerere_university_main_building.jpg"),
+    PX("africa-university"),
   "aga-khan":
-    WC("Aga_Khan_University_Stadium.jpg"),
+    PX("aga-khan-campus"),
   "rotary-peace-fellowship":
-    WC("United_Nations_Headquarters_in_New_York_City.jpg"),
+    PX("united-nations-ny"),
   "isdb-scholarship":
-    WC("Islamic_Development_Bank_Jeddah.jpg"),
+    PX("jeddah-saudi"),
   "ofid-scholarship":
-    WC("Vienna_International_Centre_2013.jpg"),
+    PX("vienna-international"),
   "latin-america-oas":
-    WC("OAS_building_Washington.jpg"),
+    PX("latin-america-oas"),
   "african-union-scholarship":
-    WC("African_Union_Conference_Center_and_Office_Complex.jpg"),
+    PX("addis-ababa-africa"),
+  "visegrad-scholarship":
+    PX("visegrad-central-europe"),
 };
 
 export function getScholarshipImage(id: string, _countryCode: string): string {
-  return SCHOLARSHIP_PHOTOS[id] || "";
+  return SCHOLARSHIP_PHOTOS[id] || PX(id);
 }
 
-// Accent gradient colors per tag for fallback backgrounds
 export const TAG_GRADIENT: Record<string, string> = {
   green:  "linear-gradient(135deg,#052e16 0%,#0a0a0e 100%)",
   yellow: "linear-gradient(135deg,#1c1007 0%,#0a0a0e 100%)",
