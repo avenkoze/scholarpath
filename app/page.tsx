@@ -54,24 +54,24 @@ export default function HomePage() {
 
   return (
     <div style={{minHeight:"100vh",background:"#050507"}}>
-
-      {/* Maintenance Banner */}
+      {/* Maintenance Banner — sticky at top, always visible */}
       <div style={{
-        background:"rgba(245,158,11,0.12)",
-        borderBottom:"1px solid rgba(245,158,11,0.25)",
-        padding:"9px 24px",
+        position:"sticky",top:0,zIndex:200,
+        background:"rgba(20,14,0,0.97)",
+        borderBottom:"1px solid rgba(245,158,11,0.30)",
+        padding:"8px 24px",
         textAlign:"center",
         fontSize:13,
         color:"#fbbf24",
         fontWeight:500,
         letterSpacing:"0.1px",
+        backdropFilter:"blur(8px)",
       }}>
-        🛠 This site is currently under maintenance. Some features may be temporarily unavailable.
+        🛠 Under maintenance — some features may be temporarily unavailable.
       </div>
-
-      {/* Nav */}
+      {/* Nav — sticks below the banner */}
       <nav style={{
-        position:"sticky",top:0,zIndex:100,height:52,
+        position:"sticky",top:37,zIndex:100,height:52,
         borderBottom:"1px solid rgba(255,255,255,0.07)",
         background:"rgba(5,5,7,0.92)",backdropFilter:"blur(16px)",
         display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 24px",
@@ -86,6 +86,7 @@ export default function HomePage() {
       </nav>
 
       <div style={{maxWidth:900,margin:"0 auto",padding:"72px 24px 56px"}}>
+        {/* Hero */}
         <div className="animate-fade-up" style={{textAlign:"center",marginBottom:48}}>
           <div style={{
             display:"inline-flex",alignItems:"center",gap:6,
@@ -111,6 +112,7 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* Stats */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:1,marginBottom:48,background:"rgba(255,255,255,0.07)",borderRadius:6,overflow:"hidden"}}>
           {[
             {v:`${scholarships.length}+`,l:"Scholarships"},
@@ -125,6 +127,7 @@ export default function HomePage() {
           ))}
         </div>
 
+        {/* Filters */}
         <div id="scholarships">
           <input
             type="text"
@@ -175,6 +178,7 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* Grid */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:12}}>
           {filtered.map((s,i) => (
             <div
@@ -185,13 +189,15 @@ export default function HomePage() {
                 display:"flex",flexDirection:"column",overflow:"hidden",padding:0,
               }}
             >
+              {/* Image header — click opens detail page */}
               <Link href={`/scholarship/${s.id}`} style={{textDecoration:"none",display:"block"}}>
                 <div style={{
                   height:160,position:"relative",overflow:"hidden",
                   background: TAG_GRADIENT[s.tagColor] || "linear-gradient(135deg,#0a0a14,#050507)",
                 }}>
+                  {/* Full-cover photo */}
                   <img
-                    src={getScholarshipImage(s.id, s.countryCode) || "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
+                    src={getScholarshipImage(s.id, s.countryCode)}
                     alt={s.name}
                     style={{
                       position:"absolute",inset:0,width:"100%",height:"100%",
@@ -200,22 +206,26 @@ export default function HomePage() {
                     }}
                     onError={(e)=>{(e.target as HTMLImageElement).style.opacity="0";}}
                   />
+                  {/* Gradient overlay */}
                   <div style={{
                     position:"absolute",inset:0,
                     background:"linear-gradient(to bottom, rgba(5,5,7,0.1) 0%, rgba(5,5,7,0.7) 100%)",
                   }}/>
+                  {/* tag badge */}
                   <div style={{position:"absolute",top:10,right:10}}>
                     <span className={`tag-${s.tagColor}`} style={{fontSize:10,padding:"2px 8px",borderRadius:3,fontWeight:600}}>
                       {s.tag}
                     </span>
                   </div>
+                  {/* country + flag */}
                   <div style={{position:"absolute",bottom:10,left:12,display:"flex",alignItems:"center",gap:6}}>
                     <span style={{fontSize:16}}>{FLAG[s.countryCode]||"🌍"}</span>
-                    <span style={{fontSize:11,color:"rgba(245,245,250,0.85)",fontWeight:600,textShadow:"0 1px 4px rgba(0,0,0,0.8)"}}>{s.country}</span>
+                    <span style={{fontSize:11,color:"rgba(245,245,250,0.7)",fontWeight:500}}>{s.country}</span>
                   </div>
                 </div>
               </Link>
 
+              {/* Card body */}
               <Link href={`/scholarship/${s.id}`} style={{textDecoration:"none",color:"inherit",flex:1,padding:"16px 16px 12px",display:"block"}}>
                 <div style={{fontSize:10,color:"rgba(245,245,250,0.38)",textTransform:"uppercase",letterSpacing:"0.6px",fontWeight:500,marginBottom:4}}>
                   {s.type}
@@ -251,6 +261,7 @@ export default function HomePage() {
                 </div>
               </Link>
 
+              {/* Action buttons */}
               <div style={{display:"flex",gap:6,padding:"0 16px 16px"}}>
                 <a
                   href={s.link}
@@ -291,6 +302,7 @@ export default function HomePage() {
           </div>
         )}
 
+        {/* CTA Banner */}
         <div style={{
           marginTop:64,border:"1px solid rgba(0,229,204,0.15)",
           borderRadius:6,padding:"36px 32px",textAlign:"center",
@@ -314,6 +326,7 @@ export default function HomePage() {
           </p>
         </div>
 
+        {/* Sources footer */}
         <div style={{textAlign:"center",padding:"48px 0 24px",borderTop:"1px solid rgba(255,255,255,0.06)",marginTop:48}}>
           <div style={{fontSize:11,color:"rgba(245,245,250,0.25)",marginBottom:8}}>
             Easy Scholarship — Data sourced from official scholarship and university websites
