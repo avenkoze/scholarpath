@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import scholarshipsData from "@/data/scholarships.json";
 import type { Scholarship } from "@/lib/types";
 import Link from "next/link";
-import { getScholarshipImage, TAG_GRADIENT } from "@/lib/images";
 
 const scholarships = scholarshipsData as Scholarship[];
 
@@ -14,6 +13,44 @@ const FLAG: Record<string, string> = {
   ca:"🇨🇦",fr:"🇫🇷",nz:"🇳🇿",dk:"🇩🇰",fi:"🇫🇮",ie:"🇮🇪",
   at:"🇦🇹",my:"🇲🇾",multi:"🌍",hu:"🇭🇺",tw:"🇹🇼",sg:"🇸🇬",
   sa:"🇸🇦",ru:"🇷🇺",pl:"🇵🇱",be:"🇧🇪",it:"🇮🇹",no:"🇳🇴",
+};
+
+// Rich gradient per country — pure CSS, zero external deps
+const COUNTRY_GRADIENT: Record<string, string> = {
+  us: "linear-gradient(135deg,#0a1628 0%,#1a2a4a 50%,#0d1f3c 100%)",
+  de: "linear-gradient(135deg,#1a0a00 0%,#2a1500 50%,#1a0a00 100%)",
+  gb: "linear-gradient(135deg,#0a0a2a 0%,#1a0a1a 50%,#0a1a2a 100%)",
+  fr: "linear-gradient(135deg,#00051a 0%,#0a001a 50%,#1a0505 100%)",
+  jp: "linear-gradient(135deg,#1a0505 0%,#2a0808 50%,#1a0505 100%)",
+  kr: "linear-gradient(135deg,#00051a 0%,#1a0505 50%,#00051a 100%)",
+  cn: "linear-gradient(135deg,#1a0500 0%,#2a0800 50%,#1a0500 100%)",
+  au: "linear-gradient(135deg,#000a1a 0%,#001a0a 50%,#000a1a 100%)",
+  ch: "linear-gradient(135deg,#1a0505 0%,#0a0a0a 50%,#1a0505 100%)",
+  nl: "linear-gradient(135deg,#1a0500 0%,#001a00 50%,#00001a 100%)",
+  se: "linear-gradient(135deg,#000a1a 0%,#1a0800 50%,#000a1a 100%)",
+  tr: "linear-gradient(135deg,#1a0000 0%,#2a0000 50%,#1a0000 100%)",
+  hu: "linear-gradient(135deg,#1a0000 0%,#0a0a0a 50%,#001a00 100%)",
+  pl: "linear-gradient(135deg,#1a0505 0%,#0a0a0a 50%,#1a0505 100%)",
+  ca: "linear-gradient(135deg,#1a0505 0%,#0a0a0a 50%,#1a0505 100%)",
+  sg: "linear-gradient(135deg,#1a0505 0%,#0a0a0a 50%,#1a0505 100%)",
+  sa: "linear-gradient(135deg,#001a00 0%,#0a0a0a 50%,#001a00 100%)",
+  ru: "linear-gradient(135deg,#1a0000 0%,#00001a 50%,#1a1a00 100%)",
+  tw: "linear-gradient(135deg,#00001a 0%,#1a0000 50%,#00001a 100%)",
+  nz: "linear-gradient(135deg,#00001a 0%,#001a00 50%,#00001a 100%)",
+  it: "linear-gradient(135deg,#001a00 0%,#0a0a0a 50%,#1a0000 100%)",
+  be: "linear-gradient(135deg,#0a0a00 0%,#0a0000 50%,#000a00 100%)",
+  no: "linear-gradient(135deg,#1a0000 0%,#00001a 50%,#1a0000 100%)",
+  fi: "linear-gradient(135deg,#00001a 0%,#0a0a0a 50%,#00001a 100%)",
+  at: "linear-gradient(135deg,#1a0000 0%,#0a0a0a 50%,#1a0000 100%)",
+  multi: "linear-gradient(135deg,#001a0a 0%,#00001a 50%,#1a000a 100%)",
+};
+
+const TAG_COLOR: Record<string, {bg:string,text:string}> = {
+  green:  {bg:"rgba(34,197,94,0.15)",  text:"#4ade80"},
+  yellow: {bg:"rgba(234,179,8,0.15)",  text:"#facc15"},
+  purple: {bg:"rgba(168,85,247,0.15)", text:"#c084fc"},
+  blue:   {bg:"rgba(59,130,246,0.15)", text:"#60a5fa"},
+  red:    {bg:"rgba(239,68,68,0.15)",  text:"#f87171"},
 };
 
 const ALL_COUNTRIES = [...new Set(scholarships.map(s => s.country))].sort();
@@ -54,7 +91,7 @@ export default function HomePage() {
 
   return (
     <div style={{minHeight:"100vh",background:"#050507"}}>
-      {/* Maintenance Banner — sticky at top, always visible */}
+      {/* Maintenance Banner */}
       <div style={{
         position:"sticky",top:0,zIndex:200,
         background:"rgba(20,14,0,0.97)",
@@ -69,7 +106,7 @@ export default function HomePage() {
       }}>
         🛠 Under maintenance — some features may be temporarily unavailable.
       </div>
-      {/* Nav — sticks below the banner */}
+      {/* Nav */}
       <nav style={{
         position:"sticky",top:37,zIndex:100,height:52,
         borderBottom:"1px solid rgba(255,255,255,0.07)",
@@ -180,118 +217,121 @@ export default function HomePage() {
 
         {/* Grid */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:12}}>
-          {filtered.map((s,i) => (
-            <div
-              key={s.id}
-              className="card animate-fade-up"
-              style={{
-                textAlign:"left",animationDelay:`${Math.min(i*25,300)}ms`,
-                display:"flex",flexDirection:"column",overflow:"hidden",padding:0,
-              }}
-            >
-              {/* Image header — click opens detail page */}
-              <Link href={`/scholarship/${s.id}`} style={{textDecoration:"none",display:"block"}}>
-                <div style={{
-                  height:160,position:"relative",overflow:"hidden",
-                  background: TAG_GRADIENT[s.tagColor] || "linear-gradient(135deg,#0a0a14,#050507)",
-                }}>
-                  {/* Full-cover photo */}
-                  <img
-                    src={getScholarshipImage(s.id, s.countryCode)}
-                    alt={s.name}
-                    style={{
-                      position:"absolute",inset:0,width:"100%",height:"100%",
-                      objectFit:"cover",objectPosition:"center",
-                      opacity:0.75,transition:"opacity 0.3s",
-                    }}
-                    onError={(e)=>{(e.target as HTMLImageElement).style.opacity="0";}}
-                  />
-                  {/* Gradient overlay */}
+          {filtered.map((s,i) => {
+            const grad = COUNTRY_GRADIENT[s.countryCode] || COUNTRY_GRADIENT.multi;
+            const tc = TAG_COLOR[s.tagColor] || TAG_COLOR.blue;
+            return (
+              <div
+                key={s.id}
+                className="card animate-fade-up"
+                style={{
+                  textAlign:"left",animationDelay:`${Math.min(i*25,300)}ms`,
+                  display:"flex",flexDirection:"column",overflow:"hidden",padding:0,
+                }}
+              >
+                {/* Card header — pure CSS, no external images */}
+                <Link href={`/scholarship/${s.id}`} style={{textDecoration:"none",display:"block"}}>
                   <div style={{
-                    position:"absolute",inset:0,
-                    background:"linear-gradient(to bottom, rgba(5,5,7,0.1) 0%, rgba(5,5,7,0.7) 100%)",
-                  }}/>
-                  {/* tag badge */}
-                  <div style={{position:"absolute",top:10,right:10}}>
-                    <span className={`tag-${s.tagColor}`} style={{fontSize:10,padding:"2px 8px",borderRadius:3,fontWeight:600}}>
-                      {s.tag}
-                    </span>
-                  </div>
-                  {/* country + flag */}
-                  <div style={{position:"absolute",bottom:10,left:12,display:"flex",alignItems:"center",gap:6}}>
-                    <span style={{fontSize:16}}>{FLAG[s.countryCode]||"🌍"}</span>
-                    <span style={{fontSize:11,color:"rgba(245,245,250,0.7)",fontWeight:500}}>{s.country}</span>
-                  </div>
-                </div>
-              </Link>
-
-              {/* Card body */}
-              <Link href={`/scholarship/${s.id}`} style={{textDecoration:"none",color:"inherit",flex:1,padding:"16px 16px 12px",display:"block"}}>
-                <div style={{fontSize:10,color:"rgba(245,245,250,0.38)",textTransform:"uppercase",letterSpacing:"0.6px",fontWeight:500,marginBottom:4}}>
-                  {s.type}
-                </div>
-                <h3 style={{fontSize:14,fontWeight:600,lineHeight:1.4,color:"#F5F5FA",marginBottom:4}}>
-                  {s.name}
-                </h3>
-                <p style={{fontSize:11,color:"rgba(245,245,250,0.45)",marginBottom:12,lineHeight:1.5}}>
-                  {s.university}
-                </p>
-                <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:12}}>
-                  {s.level.slice(0,3).map(l=>(
-                    <span key={l} style={{
-                      fontSize:10,padding:"2px 7px",borderRadius:3,
-                      background:"rgba(255,255,255,0.06)",color:"rgba(245,245,250,0.55)",
-                      border:"1px solid rgba(255,255,255,0.1)",
-                    }}>{l}</span>
-                  ))}
-                </div>
-                <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:10,display:"flex",justifyContent:"space-between"}}>
-                  <div>
-                    <div style={{fontSize:10,color:"rgba(245,245,250,0.35)",marginBottom:2,textTransform:"uppercase",letterSpacing:"0.4px"}}>Amount</div>
-                    <div style={{fontSize:12,fontWeight:600,color:s.amount==="Full Funding"?"#4ade80":"#F5F5FA"}}>
-                      {s.amount==="Full Funding"?"✓ Full Funding":s.amount}
+                    height:140,position:"relative",overflow:"hidden",
+                    background: grad,
+                    display:"flex",flexDirection:"column",
+                    alignItems:"center",justifyContent:"center",
+                  }}>
+                    {/* Subtle noise texture via radial gradients */}
+                    <div style={{
+                      position:"absolute",inset:0,
+                      background:"radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.03) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.04) 0%, transparent 50%)",
+                    }}/>
+                    {/* Big flag */}
+                    <div style={{fontSize:52,lineHeight:1,marginBottom:6,filter:"drop-shadow(0 2px 8px rgba(0,0,0,0.5))"}}>
+                      {FLAG[s.countryCode]||"🌍"}
+                    </div>
+                    {/* Country name */}
+                    <div style={{fontSize:11,color:"rgba(245,245,250,0.5)",fontWeight:500,letterSpacing:"0.5px"}}>
+                      {s.country}
+                    </div>
+                    {/* Tag badge */}
+                    <div style={{position:"absolute",top:10,right:10}}>
+                      <span style={{
+                        fontSize:10,padding:"2px 8px",borderRadius:3,fontWeight:600,
+                        background: tc.bg,
+                        color: tc.text,
+                        border:`1px solid ${tc.text}33`,
+                      }}>
+                        {s.tag}
+                      </span>
                     </div>
                   </div>
-                  <div style={{textAlign:"right"}}>
-                    <div style={{fontSize:10,color:"rgba(245,245,250,0.35)",marginBottom:2,textTransform:"uppercase",letterSpacing:"0.4px"}}>Deadline</div>
-                    <div style={{fontSize:12,color:"rgba(245,245,250,0.7)"}}>
-                      {s.deadline.includes("Varies")?s.deadline:new Date(s.deadline).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}
-                    </div>
-                  </div>
-                </div>
-              </Link>
-
-              {/* Action buttons */}
-              <div style={{display:"flex",gap:6,padding:"0 16px 16px"}}>
-                <a
-                  href={s.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={e=>e.stopPropagation()}
-                  style={{
-                    flex:1,background:"rgba(255,255,255,0.05)",
-                    border:"1px solid rgba(255,255,255,0.1)",
-                    color:"rgba(245,245,250,0.7)",borderRadius:4,
-                    padding:"7px 0",textAlign:"center",fontSize:11,
-                    fontWeight:500,textDecoration:"none",display:"block",
-                  }}
-                >
-                  Official Site ↗
-                </a>
-                <Link
-                  href={`/write?id=${s.id}`}
-                  onClick={e=>e.stopPropagation()}
-                  style={{
-                    flex:1,background:"#F5F5FA",color:"#050507",
-                    borderRadius:4,padding:"7px 0",textAlign:"center",
-                    fontSize:11,fontWeight:700,textDecoration:"none",display:"block",
-                  }}
-                >
-                  Write Letter
                 </Link>
+
+                {/* Card body */}
+                <Link href={`/scholarship/${s.id}`} style={{textDecoration:"none",color:"inherit",flex:1,padding:"16px 16px 12px",display:"block"}}>
+                  <div style={{fontSize:10,color:"rgba(245,245,250,0.38)",textTransform:"uppercase",letterSpacing:"0.6px",fontWeight:500,marginBottom:4}}>
+                    {s.type}
+                  </div>
+                  <h3 style={{fontSize:14,fontWeight:600,lineHeight:1.4,color:"#F5F5FA",marginBottom:4}}>
+                    {s.name}
+                  </h3>
+                  <p style={{fontSize:11,color:"rgba(245,245,250,0.45)",marginBottom:12,lineHeight:1.5}}>
+                    {s.university}
+                  </p>
+                  <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:12}}>
+                    {s.level.slice(0,3).map(l=>(
+                      <span key={l} style={{
+                        fontSize:10,padding:"2px 7px",borderRadius:3,
+                        background:"rgba(255,255,255,0.06)",color:"rgba(245,245,250,0.55)",
+                        border:"1px solid rgba(255,255,255,0.1)",
+                      }}>{l}</span>
+                    ))}
+                  </div>
+                  <div style={{borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:10,display:"flex",justifyContent:"space-between"}}>
+                    <div>
+                      <div style={{fontSize:10,color:"rgba(245,245,250,0.35)",marginBottom:2,textTransform:"uppercase",letterSpacing:"0.4px"}}>Amount</div>
+                      <div style={{fontSize:12,fontWeight:600,color:s.amount==="Full Funding"?"#4ade80":"#F5F5FA"}}>
+                        {s.amount==="Full Funding"?"✓ Full Funding":s.amount}
+                      </div>
+                    </div>
+                    <div style={{textAlign:"right"}}>
+                      <div style={{fontSize:10,color:"rgba(245,245,250,0.35)",marginBottom:2,textTransform:"uppercase",letterSpacing:"0.4px"}}>Deadline</div>
+                      <div style={{fontSize:12,color:"rgba(245,245,250,0.7)"}}>
+                        {s.deadline.includes("Varies")?s.deadline:new Date(s.deadline).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Action buttons */}
+                <div style={{display:"flex",gap:6,padding:"0 16px 16px"}}>
+                  <a
+                    href={s.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={e=>e.stopPropagation()}
+                    style={{
+                      flex:1,background:"rgba(255,255,255,0.05)",
+                      border:"1px solid rgba(255,255,255,0.1)",
+                      color:"rgba(245,245,250,0.7)",borderRadius:4,
+                      padding:"7px 0",textAlign:"center",fontSize:11,
+                      fontWeight:500,textDecoration:"none",display:"block",
+                    }}
+                  >
+                    Official Site ↗
+                  </a>
+                  <Link
+                    href={`/write?id=${s.id}`}
+                    onClick={e=>e.stopPropagation()}
+                    style={{
+                      flex:1,background:"#F5F5FA",color:"#050507",
+                      borderRadius:4,padding:"7px 0",textAlign:"center",
+                      fontSize:11,fontWeight:700,textDecoration:"none",display:"block",
+                    }}
+                  >
+                    Write Letter
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {filtered.length===0 && (
